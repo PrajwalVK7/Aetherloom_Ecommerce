@@ -1,3 +1,6 @@
 [submodule "aetherloom"]
 	path = aetherloom
 	url = https://github.com/PrajwalVK7/AetherLoom_frontend.git
+[submodule "pserver"]
+	path = pserver
+	url = https://github.com/PrajwalVK7/AetherLoom_Server.git
