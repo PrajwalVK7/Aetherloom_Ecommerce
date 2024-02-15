@@ -1,0 +1,3 @@
+[submodule "aetherloom"]
+	path = aetherloom
+	url = https://github.com/PrajwalVK7/AetherLoom_frontend.git
