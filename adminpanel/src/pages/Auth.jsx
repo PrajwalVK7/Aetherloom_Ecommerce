@@ -34,9 +34,9 @@ function Auth() {
         }
     }
     return (
-        <div style={{ backgroundImage: `url(${loginBg})`, height: '90vh' }}>
+        <div style={{ height: '90vh' }}>
             <div className='d-flex justify-content-center align-items-center h-75'>
-                <div>
+                <div className='border rounded shadow p-3 bg-primary'>
                     <Form>
                         <Form.Group className="mb-3" controlId="formGroupEmail">
                             <Form.Label>Username</Form.Label>

@@ -18,7 +18,7 @@ function AddCategory({ setCategoryStatus }) {
             setToken(sessionStorage.getItem("token"))
         }
     },[])
-    console.log("token",token)
+    // console.log("token",token)
 
     const [category, setCategory] = useState({
         title: "",
@@ -48,10 +48,14 @@ function AddCategory({ setCategoryStatus }) {
                 // console.log("token aaa",token)
 
                 const response = await addCategory(reqBody,reqHeader)
-                console.log(response.status)
+                // console.log(response.status)
                 if (response.status === 200) {
                     alert("category added successfully")
                     setCategoryStatus(true)
+                    setCategory({
+                        title: "",
+                        thumbnail: ""
+                    })
                     handleClose()
                 }
                 else {

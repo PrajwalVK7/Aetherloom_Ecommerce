@@ -22,32 +22,40 @@ function Users() {
 
     return (
         <>
+        
+            <div style={{marginTop:'180px'}}>
             <h1 className='text-center'>All users</h1>
+            <div className='d-flex justify-content-center align-items-center'>
+                    <div className='shadow border rounded p-4' style={{backgroundColor:'thistle',width:'20rem'}}>
+                    <p className='text-center text-black fw-5' style={{fontSize:'20px',fontWeight:'900'}}>Total Users : <span>{allUserData?.length}</span></p>
+                    </div>
+                </div>
             <div className='container mt-4'>
                 <Table>
-                    <thead>
+                    <thead className='table-active shadow rounded'>
                         <tr>
-                            <th>#</th>
-                            <th>user_id</th>
-                            <th>Name</th>
-                            <th>Email</th>
+                            <th className='text-center text-black'>#</th>
+                            <th  className='text-center text-black'>user_id</th>
+                            <th  className='text-center text-black'>Name</th>
+                            <th  className='text-center text-black'>Email</th>
 
                         </tr>
                     </thead>
                     <tbody>
                         {allUserData?.length > 0 ?
                             allUserData.map((item,index) => (
-                                <tr>
-                                    <td>{index+1}</td>
-                                    <td>{item._id}</td>
-                                    <td>{item.username}</td>
-                                    <td>{item.email}</td>
+                                <tr className='shadow border-primary'>
+                                    <td  className='text-center text-black'>{index+1}</td>
+                                    <td  className='text-center text-black'>{item._id}</td>
+                                    <td  className='text-center text-black'>{item.username}</td>
+                                    <td  className='text-center text-black'>{item.email}</td>
                                 </tr>
-                            )) : <p>No users</p>
+                            )) : <p className='text-center'>No users</p>
 
                         }
                     </tbody>
                 </Table>
+            </div>
             </div>
 
         </>)

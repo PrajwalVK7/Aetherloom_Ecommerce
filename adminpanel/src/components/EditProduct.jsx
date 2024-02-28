@@ -6,43 +6,59 @@ import Form from 'react-bootstrap/Form';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import InputGroup from 'react-bootstrap/InputGroup';
-import { addProduct } from '../services/allAPI';
-import thumbnailDefault from '../assets/pexels-valeria-boltneva-1123262.jpg'
-
-
-function AddProduct({ allCategory, setProductStatus }) {
+import { baseURL } from '../services/baseURL';
+import { editProduct } from '../services/allAPI';
+function EditProduct({ product, allCategory,setEditStatus }) {
     const [show, setShow] = useState(false);
-    console.log(allCategory)
+    // console.log(allCategory)
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const [thumbnailPreview, setThumbnailPreview] = useState("")
-    const [token,setToken] = useState('');
-    useEffect(()=>{
-        if(sessionStorage.token){
-            setToken(sessionStorage.getItem("token"))
-        }
-    },[])
+    const [imagesPreview, setImagesPreview] = useState([])
 
     const [productData, setProductData] = useState({
-        name: "",
-        category: "",
+        id: product._id,
+        name: product.name,
+        category: product.category,
         thumbnail: "",
-        description: "",
-        price: "",
-        images: "",
-        gst:""
+        description: product.description,
+        price: product.price,
+        images: [],
+        gst: product.gst
     })
     useEffect(() => {
         if (productData.thumbnail) {
             setThumbnailPreview(URL.createObjectURL(productData.thumbnail))
         }
-    }, [productData.thumbnail])
-    // console.log(productData)
-    const handleUpload = async (e) => {
-        e.preventDefault();
-        const { name, category, thumbnail, description, price, images,gst } = productData
-        if (!name || !description || !price || !thumbnail ) {
-            alert("Please add all details")
+    }, [productData.thumbnail]);
+
+    useEffect(() => {
+        // console.log("productData.images:", productData.images);
+
+        const imagesArray = Array.from(productData.images);
+
+        if (Array.isArray(imagesArray) && imagesArray.length > 0) {
+            const previews = imagesArray.map((item) => URL.createObjectURL(item));
+            // console.log("Previews", previews);
+            setImagesPreview(previews);
+        }
+    }, [productData.images]);
+
+
+
+
+
+
+
+
+    // console.log("fghj", product.images)
+    const handleUpdate = async (e) => {
+        e.preventDefault()
+        const { id, name, category, description, price, gst, thumbnail, images } = productData;
+        const token = sessionStorage.getItem("token")
+
+        if (!name || !category || !description || !price || !gst) {
+            alert("Please Fill Add Details")
         }
         else {
             try {
@@ -52,62 +68,71 @@ function AddProduct({ allCategory, setProductStatus }) {
                 reqBody.append("thumbnail", thumbnail);
                 reqBody.append("description", description)
                 reqBody.append("price", price);
-                reqBody.append("gst",gst)
+                reqBody.append("gst", gst)
                 if (images && images.length > 0) {
                     for (let i = 0; i < images.length; i++) {
                         reqBody.append("images", images[i]);
                     }
-                }               
-                const reqHeader = {
-                    "Content-Type": "multipart/form-data",
-                    "Authorization":`Bearer ${token}`
                 }
 
+                if (thumbnailPreview || imagesPreview) {
+                    const reqHeader = {
+                        "Content-Type": "multipart/form-data",
+                        "Authorization": `Bearer ${token}`
+                    }
+                    const response = await editProduct(id, reqBody, reqHeader)
+                    // console.log(response)
+                    if (response.status === 200) {
+                        handleClose()
+                        setEditStatus(true)
+                    }
+                    else {
+                        console.log(response.response.data)
+                    }
+                } else {
+                    const reqHeader = {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    }
+                    const response = await editProduct(id, reqBody, reqHeader)
+                    // console.log(response)
+                    if (response.status === 200) {
+                        handleClose()
+                        setEditStatus(true)
 
-                const response = await addProduct(reqBody, reqHeader);
-
-
-                if (response.status === 200) {
-                    setProductStatus(true)
-                    alert("Product uploaded successfully")
-                    setProductData({
-                        name: "",
-                        category: "",
-                        description: "",
-                        price: "",
-                        images: "",
-                        gst:""
-                    })
-                    handleClose()
-
+                    }
+                    else {
+                        console.log(response.response.data)
+                    }
                 }
-                else {
-                    alert(response.response.data)
-                }
+
             } catch (err) {
-                console.log(`Product is not added due to ${err}`)
+
             }
         }
 
     }
-    console.log(productData)
-    const handleClear = (e) => {
-        e.preventDefault();
+
+    // console.log(productData)
+    const handleReset = (e) => {
+        e.preventDefault()
         setProductData({
-            name: "",
-            category: "",
+            id: product._id,
+            name: product.name,
+            category: product.category,
             thumbnail: "",
-            description: "",
-            price: "",
-            images: "",
-            gst:""
+            description: product.description,
+            price: product.price,
+            images: [],
+            gst: product.gst
         })
-        setThumbnailPreview("")
+        setImagesPreview([]);
+        setThumbnailPreview('')
 
     }
     return (
-        <div className='container d-flex justify-content-center'>
-            <button className='btn text-black' style={{ backgroundColor: 'orange' }} onClick={handleShow}>Add Product <i class="fa-solid fa-upload ms-2"></i></button>
+        <>
+            <button className='btn ' style={{ backgroundColor: 'skyblue' }} onClick={handleShow}> <i class="fa-solid fa-pencil"></i></button>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title className='text-black'>Add Product</Modal.Title>
@@ -139,7 +164,7 @@ function AddProduct({ allCategory, setProductStatus }) {
                                 <Form.Control id='thumbnail' type="file" placeholder="Upload the thumpnail "
                                     onChange={(e) => setProductData({ ...productData, thumbnail: e.target.files[0] })} />
                                 <div className='d-flex justify-content-center p-2'>
-                                    <img src={thumbnailPreview ? thumbnailPreview : thumbnailDefault} width={"200px"} height={"200px"} alt="" />
+                                    <img src={thumbnailPreview ? thumbnailPreview : `${baseURL}uploads/${product.thumbnail}`} width={"200px"} height={"200px"} alt="" />
                                 </div>
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="formBasicText">
@@ -155,24 +180,39 @@ function AddProduct({ allCategory, setProductStatus }) {
                             </Form.Group>
                             <Form.Group controlId="formFileMultiple" className="mb-3">
                                 <Form.Label>Product Images</Form.Label>
-                                <Form.Control type="file" id='images' name='images' multiple placeholder='Multiple Images' 
-                                onChange={(e) => setProductData({ ...productData, images: e.target.files })} />
+                                <Form.Control type="file" id='images' name='images' multiple placeholder='Multiple Images'
+                                    onChange={(e) => setProductData({ ...productData, images: e.target.files })} />
                             </Form.Group>
+                            {
+                                imagesPreview.length > 0 ? (
+                                    imagesPreview.map((item, index) => (
+                                        <div key={index}>
+                                            <img className='mt-2 ms-3' src={item} width={"200px"} height={"200px"} alt="" />
+                                        </div>))
+                                ) : (
+                                    product.images?.length > 0 ? (
+                                        product.images.map((item, index) => (
+                                            <div key={index}>
+                                                <img className='mt-2 ms-3' src={`${baseURL}uploads/${item}`} width={"200px"} height={"200px"} alt="" />
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p>No data</p>
+                                    )
+                                )
+                            }
+
                         </Form>
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClear}>
-                        Clear
-                    </Button>
-                    <Button variant="primary" onClick={handleUpload}>
-                        Upload
+                    <Button variant="primary" onClick={handleUpdate} >
+                        Update
                     </Button>
                 </Modal.Footer>
             </Modal>
-
-        </div>
+        </>
     )
 }
 
-export default AddProduct
+export default EditProduct

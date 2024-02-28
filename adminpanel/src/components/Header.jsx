@@ -5,7 +5,7 @@ import Nav from 'react-bootstrap/Nav';
 import { Link } from 'react-router-dom';
 function Header() {
     return (
-        <div style={{backgroundColor:'black'}}>
+        <div className='fixed-top bg-light' >
             <div>
                 <h1 className='text-center'>Aetherloom Inventory</h1>
             </div>

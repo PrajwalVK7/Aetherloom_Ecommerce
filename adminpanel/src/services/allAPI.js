@@ -27,6 +27,14 @@ export const getAllCategories = async(reqBody)=>{
 export const deleteById = async(_id,reqHeader)=>{
    return await commonAPI("DELETE",`${baseURL}categories/delete/${_id}`,"",reqHeader)
 }
+
+// edit category
+
+export const editCategory = async(id,reqBody,reqHeader)=>{
+   return await commonAPI("PUT",`${baseURL}categories/edit/${id}`,reqBody,reqHeader)
+}
+
+
 // add Product
 
 export const addProduct = async(reqBody,reqHeader)=>{
@@ -34,8 +42,8 @@ export const addProduct = async(reqBody,reqHeader)=>{
 }
 
 // get all products
-export const getAllProducts = async(reqHeader)=>{
-   return await commonAPI("GET",`${baseURL}products`,"",reqHeader)
+export const getAllProducts = async(searchKey,reqHeader)=>{
+   return await commonAPI("GET",`${baseURL}products?search=${searchKey}`,"",reqHeader)
 }
 
 //delete product by Id
@@ -48,8 +56,19 @@ export const getProductsByCategory = async(category,reqHeader)=>{
    return await commonAPI("GET",`${baseURL}products/category/${category}`,"",reqHeader)
 }
 
+// edit product
+export const editProduct = async(id,reqBody,reqHeader)=>{
+   return await commonAPI("PUT",`${baseURL}products/edit/${id}`,reqBody,reqHeader)
+}
+
 
 // get all users details
 export const getAllUsersDetails = async()=>{
    return await commonAPI("GET",`${baseURL}user/getallusers`,"","")
+}
+
+// all orders
+
+export const getAllOrders = async(reqHeader)=>{
+   return await commonAPI("GET",`${baseURL}orders/all`,"",reqHeader)
 }
