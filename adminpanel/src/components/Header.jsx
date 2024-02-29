@@ -2,8 +2,17 @@ import React from 'react'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 function Header() {
+    const navigate = useNavigate()
+    const token = sessionStorage.getItem("token");
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        sessionStorage.removeItem("token");
+        navigate('/')
+
+    }
     return (
         <div className='fixed-top bg-light' >
             <div>
@@ -15,6 +24,12 @@ function Header() {
                 </Nav.Link>
                 <Nav.Link className='me-4'><Link to={'/users'} style={{ textDecoration: 'none' }}>Users</Link></Nav.Link>
                 <Nav.Link className='me-4'><Link to={'/orders'} style={{ textDecoration: 'none' }}>Orders</Link></Nav.Link>
+
+                {token&&
+                    <div>
+                        <button className='btn btn-warning text-black' style={{ backgroundColor: 'orange' }} onClick={handleLogout}>Log Out</button>
+                    </div>
+                }
             </div>
 
         </div>

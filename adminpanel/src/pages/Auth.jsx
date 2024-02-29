@@ -34,8 +34,8 @@ function Auth() {
         }
     }
     return (
-        <div style={{ height: '90vh' }}>
-            <div className='d-flex justify-content-center align-items-center h-75'>
+        <div style={{ height: '90vh' }} className='d-flex justify-content-center align-items-center'>
+            <div className='d-flex justify-content-center align-items-center h-15'>
                 <div className='border rounded shadow p-3 bg-primary'>
                     <Form>
                         <Form.Group className="mb-3" controlId="formGroupEmail">

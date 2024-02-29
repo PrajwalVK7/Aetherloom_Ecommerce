@@ -11,7 +11,7 @@ function Orders() {
                 "Authorization": `Bearer ${token}`
             }
             const result = await getAllOrders(reqHeader);
-            // console.log(result)
+            console.log(result.data.items)
             if (result.status === 200) {
                 setOrders(result.data)
             }
@@ -48,17 +48,27 @@ function Orders() {
                             </tr>
                         </thead>
                         <tbody>
-                            {orders?.length > 0 ?
-                                orders.map((item, index) => (
-                                    <tr className='bg-info'>
-                                        <td>{index + 1}</td>
-                                        <td>{item._id}</td>
-                                        <td>{item.productID}</td>
-                                        <td>{item.userID}</td>
-                                    </tr>
-                                )) : <div><p className='text-center'>No Orders Yet</p></div>
+                        {orders?.length > 0 ? (
+    orders.map((item, index) => (
+        <tr className='bg-info' key={index}>
+            <td>{index + 1}</td>
+            <td>{item._id}</td>
+            <td>
+                {item.items?.map((product, productIndex) => (
+                    <div key={productIndex}>
+                        Product ID: {product.productID}
+                    </div>
+                ))}
+            </td>
+            <td>{item.userID}</td>
+        </tr>
+    ))
+) : (
+    <div>
+        <p className='text-center'>No Orders Yet</p>
+    </div>
+)}
 
-                            }
                         </tbody>
                     </Table>
                 </div>
